@@ -286,10 +286,6 @@ shinyServer(function(input, output, session) {
       mod[[j]] <- lm(forms[[j]], data = df)
     }
     
-    #start getting problems when everything adds to 1
-    # INTERCEPT IS THE ONE LEFT OUT
-    mod <- lm(pct_for_hardy2 ~ pct_e_asian_vote + pct_non_asian_vote , data = df)
-    as.numeric(summary(mod)$coefficients[,1])
     
     full_tab <- NULL
     cand_dat <- NULL
