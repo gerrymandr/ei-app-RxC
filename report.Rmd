@@ -1,0 +1,203 @@
+---
+title: "Ecological Inference Report"
+output: pdf_document
+params:
+    file1: "hello"
+    independent: NA
+    dependent1: NA
+    dependent2: NA
+    tot.votes: NA
+    candidate1: NA
+    candidate2: NA
+    input_slider: NA
+    racename: NA
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r, echo = F}
+#Getting the run_model function
+run_model <- function(independent, dependent, tot.votes, candidate, input_slider, racename){
+  # Function that generates the table, goodman plot, and EI metric (with confidence plot), given variables
+  
+  df <- as.data.frame(cbind(independent, dependent, tot.votes))
+  colnames(df) <- c('x', 'y', 'z')
+  
+  # homogeneous precincts
+  df <- df[order(df$x),]
+  hp <- round(input_slider/100*dim(df)[1], digits=0)
+  hp.low <- 1:hp
+  hp.high <- (dim(df)[1]-hp):dim(df)[1]
+  
+  df$threshold <- 0
+  df$threshold[hp.low] <- 1
+  df$threshold[hp.high] <-1
+  
+  df$hp <- NA
+  df$hp[hp.low] <- 1
+  df$hp[hp.high] <- 1
+  
+  df$hp.text <- NA
+  df$hp.text[hp.low] <- 'low'
+  df$hp.text[hp.high] <- 'high'
+  
+  hp.low.mean <- mean(df$y[df$hp.text=='low'], na.rm=T)
+  hp.high.mean <- mean(df$y[df$hp.text=='high'], na.rm=T)
+  
+  # goodman estimates
+  ger <- lm(y~x, data=df)
+  
+  # ei estimate for table and confidence interval
+  table.names <- c('ei.minority', 'ei.white')
+  ei.out <- ei_est_gen('y', '~ x', 'z',
+                       data = df[,c(1:3),], table_names = table.names, sample=1000) # eiCompare
+  #ei.out <- ei(y~x, total=input$tot.votes, data=df) # ei
+  edf.t <- data.frame(w=c(paste('All but ', racename, ' support', sep=''),
+                          hp.low.mean,
+                          ger$coefficients[1],
+                          ei.out$ei.white[1]/100,
+                          ei.out$ei.white[2]/100),
+                      m=c(paste(racename, ' support', sep=''), 
+                          hp.high.mean, 
+                          ger$coefficients[1]+ger$coefficients[2], 
+                          ei.out$ei.minority[1]/100,
+                          ei.out$ei.minority[2]/100))
+  row.names(edf.t) <- c(candidate, 'Homogeneous precincts', 'Goodman ER', 'Ecol Inf', 'EI.se')
+  
+  # generates goodman plot
+  gr.plot <- ggplot(df, aes(x=x,y=y)) + 
+    xlab(independent) + ylab(dependent) +
+    geom_smooth(method='lm', se=T, colour='black', fullrange=TRUE) +
+    scale_x_continuous(expand=c(0,0), limits=c(0,1)) +
+    scale_y_continuous(expand=c(0,0), limits=c(-1.5,1.5)) +
+    coord_cartesian(xlim=c(0,1), ylim=c(0,1)) +
+    geom_point(size=3, aes(colour=as.factor(df$threshold))) +
+    geom_point(pch=1, size=3) +
+    geom_point(pch=1, size=5, aes(colour=as.factor(df$hp))) +
+    scale_color_manual('Homogeneous precincts', breaks=c(0,1), values=c('Gray', 'Red'), labels=c('No', paste('Most extreme ', input_slider,'%', sep=''))) +
+    geom_hline(yintercept=0.5, linetype=2, colour='lightgray') +
+    theme_bw() + ggtitle("Goodman's Ecological Regression") +
+    xlab(paste('% population ', racename, sep='')) + ylab(paste('% vote for ', candidate, sep=''))
+  
+  # generates ei table
+  ei.table <- as.data.frame(t(edf.t))
+  for(i in 2:5){
+    ei.table[,i] <- as.numeric(as.character(ei.table[,i]))
+  }
+  ei.table.final <- ei.table[,c(1:4)]
+  
+  # original data with ei estimates
+  #df.ei <- df[,c(1:3)]
+  #df.ei$EI.est.min <- eiread(ei.out, 'betab')
+  #df.ei$EI.est.white <- eiread(ei.out, 'betaw')
+  
+  # generates ei dotplot
+  
+  ei.plot.df <- ei.table[,c(1,4,5)]
+  names(ei.plot.df) <- c('race', 'ei.est', 'ei.se')
+  
+  ei.plot <- ggplot(ei.plot.df, aes(x=ei.est, y=1, col=as.factor(race))) +
+    geom_hline(yintercept=1, col='black') +
+    geom_point(size=6, shape=3) +
+    ylab('') + xlab(paste('Support for candidate ', candidate, sep='')) +
+    scale_x_continuous(limits=c(-.25,1.25)) +
+    scale_y_continuous(limits=c(0,2), breaks=c(0,0.5,1,1.5,2), labels=c('','','','','')) +
+    scale_color_manual('Race', values=c('gray40', 'midnightblue'), labels=c(paste('All but ', racename, sep=''), racename)) +
+    geom_errorbarh(aes(xmin=(ei.est) - 2*(ei.se), xmax=(ei.est) + 2*(ei.se), height=0.3), size=2, alpha=0.7, height=0.3) +
+    theme_bw() + ggtitle('Ecological Inference')
+  
+  
+  list(gr.plot = gr.plot, ei.table = ei.table.final, ei.plot = ei.plot) 
+}
+
+```
+
+```{r echo = FALSE}
+library(knitr)
+
+  if (is.null(params$file1)){
+    return(NULL)}
+  fileData <-read.csv(params$file1$datapath, stringsAsFactors=F)
+  #kable(fileData, caption = "CSV Data")
+
+  #need to figure out how to remove kable and still print output
+```
+
+```{r, echo = F, results = "hide", warning=FALSE}
+#store variables
+independent <-as.numeric(as.character(params$independent))
+dependent1 <-as.numeric(as.character(params$dependent1))
+tot.votes <-as.numeric(as.character(params$tot.votes))
+dependent2 <-as.numeric(as.character(params$dependent2))
+candidate1 <-as.character(params$candidate1)
+candidate2 <-as.character(params$candidate2)
+racename <-as.character(params$racename)
+input_slider <- as.numeric(as.character(params$input_slider))
+
+#params$independent$pct_asian_vote
+ind <- which(colnames(fileData) == params$independent)
+dep1 <- which(colnames(fileData) == params$dependent1)
+dep2 <- which(colnames(fileData) == params$dependent2)
+tot <- which(colnames(fileData) == params$tot.votes)
+
+independent <- fileData[,ind]
+dependent1 <- fileData[,dep1]
+dependent2 <- fileData[,dep2]
+tot.votes <- fileData[,tot]
+```
+
+```{r echo = F, results = "hide", message = FALSE}
+model_1 <- run_model(independent, dependent1, tot.votes, candidate1, input_slider, racename)
+model_2 <- run_model(independent, dependent2, tot.votes, candidate2, input_slider, racename)
+```
+
+#Candidate 1
+
+## Table
+
+First, we compare predictions from three different models for `r params$candidate1` vote share given demographic and total vote data.  
+
+```{r echo = F}
+kable(model_1$ei.table)
+```
+
+Next, we plot votes for `r params$candidate1` by the proportion of the population that is `r params$racename` according to Goodman's regression predictions. We use the following equation. 
+
+
+## Goodman's Ecological Regression:
+```{r echo = F, warning= FALSE}
+plot(model_1$gr.plot)
+```
+
+Finally, we calculate ecological inference predictions for`r params$candidate1`'s vote share and plot them with credible intervals. If the intervals overlap, we cannot conclude that there was racially polarized voting for `r params$candidate1`. 
+
+## Ecological Inference:
+```{r echo = F}
+plot(model_1$ei.plot)
+```
+
+
+#Candidate 2
+
+## Table
+
+First, we compare predictions from three different models for `r params$candidate2` vote share given demographic and total vote data.  
+
+```{r echo = F}
+kable(model_2$ei.table)
+```
+
+Next, we plot votes for `r params$candidate1` by the proportion of the population that is `r params$racename` according to Goodman's regression predictions. We use the following equation. 
+
+## Goodman's Ecological Regression:
+```{r echo = F, warning= FALSE}
+plot(model_2$gr.plot)
+```
+
+Finally, we calculate ecological inference predictions for`r params$candidate2`'s vote share and plot them with credible intervals. If the intervals overlap, we cannot conclude that there was racially polarized voting for `r params$candidate2`. 
+
+## Ecological Inference:
+```{r echo = F}
+plot(model_2$ei.plot)
+```
