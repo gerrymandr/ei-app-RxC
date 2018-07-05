@@ -286,7 +286,6 @@ shinyServer(function(input, output, session) {
       mod[[j]] <- lm(forms[[j]], data = df)
     }
     
-    
     full_tab <- NULL
     cand_dat <- NULL
     for(i in 1:length(cands)){
@@ -307,22 +306,8 @@ shinyServer(function(input, output, session) {
     rownames(full_tab) <- table_names
     colnames(full_tab) <- candidate_name
     
-    
     # generates goodman plot
-    gr.plot <- ggplot(df, aes(x=x,y=y)) +
-      xlab(independent) + ylab(dependent) +
-      geom_smooth(method='lm', se=T, colour='black', fullrange=TRUE) +
-      scale_x_continuous(expand=c(0,0), limits=c(0,1)) +
-      scale_y_continuous(expand=c(0,0), limits=c(-1.5,1.5)) +
-      coord_cartesian(xlim=c(0,1), ylim=c(0,1)) +
-      geom_point(size=3, aes(colour=as.factor(df$threshold))) +
-      geom_point(pch=1, size=3) +
-      geom_point(pch=1, size=5, aes(colour=as.factor(df$hp))) +
-      scale_color_manual('Homogeneous precincts', breaks=c(0,1), values=c('Gray', 'Red'), labels=c('No', paste('Most extreme ', input$slider,'%', sep=''))) +
-      geom_hline(yintercept=0.5, linetype=2, colour='lightgray') +
-      theme_bw() + ggtitle("Goodman's Ecological Regression") + labs(x = paste('% population ', input$raceName, sep=''),
-                                                                     y= paste('% vote for ', candidate, sep=''),
-                                                                     caption = paste('Election data from', input$electionsource, 'and demographic data from', input$demsource, sep = ' '))
+    # left to do
     
     ####
     #### rxc Ecological Inference
