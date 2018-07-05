@@ -356,6 +356,48 @@ shinyServer(function(input, output, session) {
     #make sure all of the demographics add up to 1
     #df$allbut <- rep(1,nrow(df)) - sum(df[,1:5])
     
+    ####
+    #### rxc Ecological Regression
+    ####
+    # goodman estimates
+    ger <- lm(y~x, data=df)
+    
+    # ei estimate for table and confidence interval
+    table.names <- c('ei.minority', 'ei.white')
+    ei.out <- ei_est_gen('y', '~ x', 'z',
+                         data = df[,c(1:3),], table_names = table.names, sample=1000) # eiCompare
+    #ei.out <- ei(y~x, total=input$tot.votes, data=df) # ei
+    edf.t <- data.frame(w=c(paste('All but ', input$raceName, ' support', sep=''),
+                            hp.low.mean,
+                            ger$coefficients[1],
+                            ei.out$ei.white[1]/100,
+                            ei.out$ei.white[2]/100),
+                        m=c(paste(input$raceName, ' support', sep=''),
+                            hp.high.mean,
+                            ger$coefficients[1]+ger$coefficients[2],
+                            ei.out$ei.minority[1]/100,
+                            ei.out$ei.minority[2]/100))
+    row.names(edf.t) <- c(candidate, 'Homogeneous precincts', 'Goodman ER', 'Ecol Inf', 'EI.se')
+    
+    # generates goodman plot
+    gr.plot <- ggplot(df, aes(x=x,y=y)) +
+      xlab(independent) + ylab(dependent) +
+      geom_smooth(method='lm', se=T, colour='black', fullrange=TRUE) +
+      scale_x_continuous(expand=c(0,0), limits=c(0,1)) +
+      scale_y_continuous(expand=c(0,0), limits=c(-1.5,1.5)) +
+      coord_cartesian(xlim=c(0,1), ylim=c(0,1)) +
+      geom_point(size=3, aes(colour=as.factor(df$threshold))) +
+      geom_point(pch=1, size=3) +
+      geom_point(pch=1, size=5, aes(colour=as.factor(df$hp))) +
+      scale_color_manual('Homogeneous precincts', breaks=c(0,1), values=c('Gray', 'Red'), labels=c('No', paste('Most extreme ', input$slider,'%', sep=''))) +
+      geom_hline(yintercept=0.5, linetype=2, colour='lightgray') +
+      theme_bw() + ggtitle("Goodman's Ecological Regression") + labs(x = paste('% population ', input$raceName, sep=''),
+                                                                     y= paste('% vote for ', candidate, sep=''),
+                                                                     caption = paste('Election data from', input$electionsource, 'and demographic data from', input$demsource, sep = ' '))
+    
+    ####
+    #### rxc Ecological Inference
+    ####
     # Generate formula for passage to ei.reg.bayes() function
     form_start <- paste("cbind(")
     form_end <- paste(")")
@@ -435,7 +477,7 @@ shinyServer(function(input, output, session) {
     }
     
     
-    list(ei.table = ei.df, ei.plot = comb_plot) 
+    list(gr.plot = gr.plot, ei.table = ei.df, ei.plot = comb_plot) 
   }
   
   # 2x2 case
