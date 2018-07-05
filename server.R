@@ -45,155 +45,155 @@ shinyServer(function(input, output, session) {
 
   })
   
-  output$candDataPrompts <- renderUI({
-    df <- filedata()
-    if (is.null(df)) return(NULL)
-    if (is.null(input$numCandidates)) return(NULL)
-    numCandidates <- as.integer(input$numCandidates)
-    items=names(df)
-    names(items)=items
-    
-    lapply(1:numCandidates, function(i) {
-      varName1 <- paste("dependent",i, sep = "")
-      text1 <- paste("Candidate ", i, " data: ", sep= "")
-      selectInput(varName1,text1,items)
-    })
-
-  })
-  
-  output$candNamePrompts <- renderUI({
-    df <- filedata()
-    if (is.null(df)) return(NULL)
-    if (is.null(input$numCandidates)) return(NULL)
-    numCandidates <- as.integer(input$numCandidates)
-    items=names(df)
-    names(items)=items
-    
-    lapply(1:numCandidates, function(i) {
-      varName2 <- paste("candidate",i, sep = "")
-      text2 <- paste("Name of candidate ", i, ": ", sep= "")
-      textInput(varName2, text2)
-    })
-  })
+  # output$candDataPrompts <- renderUI({
+  #   df <- filedata()
+  #   if (is.null(df)) return(NULL)
+  #   if (is.null(input$numCandidates)) return(NULL)
+  #   numCandidates <- as.integer(input$numCandidates)
+  #   items=names(df)
+  #   names(items)=items
+  #   
+  #   lapply(1:numCandidates, function(i) {
+  #     varName1 <- paste("dependent",i, sep = "")
+  #     text1 <- paste("Candidate ", i, " data: ", sep= "")
+  #     selectInput(varName1,text1,items)
+  #   })
+  # 
+  # })
+  # 
+  # output$candNamePrompts <- renderUI({
+  #   df <- filedata()
+  #   if (is.null(df)) return(NULL)
+  #   if (is.null(input$numCandidates)) return(NULL)
+  #   numCandidates <- as.integer(input$numCandidates)
+  #   items=names(df)
+  #   names(items)=items
+  #   
+  #   lapply(1:numCandidates, function(i) {
+  #     varName2 <- paste("candidate",i, sep = "")
+  #     text2 <- paste("Name of candidate ", i, ": ", sep= "")
+  #     textInput(varName2, text2)
+  #   })
+  # })
   
   ##Prompts for candidate data (column names) and names
-  # output$dependent1 <- renderUI({
-  #   df <- filedata()
-  #   if (is.null(df)) return(NULL)
-  #   items=names(df)
-  #   names(items)=items
-  #   selectInput('dependent1','Candidate 1 data:',items, selected='pct_for_hardy2')  #CHANGE SELECTED LATER
-  # })
-  # 
-  # output$candName1 <- renderUI({
-  #   df <- filedata()
-  #   if (is.null(df)) return(NULL)
-  #   textInput('candidate1', 'Name of candidate 1:', value='Hardy')  #CHANGE VALUE LATER
-  # })
-  # 
-  # output$dependent2 <- renderUI({
-  #   df <- filedata()
-  #   if (is.null(df)) return(NULL)
-  #   items=names(df)
-  #   names(items)=items
-  #   selectInput('dependent2','Candidate 2 data:',items, selected='pct_for_kolstad2') #CHANGE SELECTED LATER
-  # })
-  # 
-  # output$candName2 <- renderUI({
-  #   df <- filedata()
-  #   if (is.null(df)) return(NULL)
-  #   textInput('candidate2', 'Name of candidate 2:', value='Kolstad') #CHANGE VALUE LATER
-  # })
-  # 
-  # output$dependent3 <- renderUI({
-  #   df <- filedata()
-  #   if (is.null(df)) return(NULL)
-  #   items=names(df)
-  #   names(items)=items
-  #   selectInput('dependent3','Candidate 3 data:',items, selected='pct_for_nadeem2')
-  # })
-  # 
-  # output$candName3 <- renderUI({
-  #   df <- filedata()
-  #   if (is.null(df)) return(NULL)
-  #   textInput('candidate3', 'Name of candidate 3:', value = 'Nadeem')
-  # })
+  output$dependent1 <- renderUI({
+    df <- filedata()
+    if (is.null(df)) return(NULL)
+    items=names(df)
+    names(items)=items
+    selectInput('dependent1','Candidate 1 data:',items, selected='pct_for_hardy2')  #CHANGE SELECTED LATER
+  })
+
+  output$candName1 <- renderUI({
+    df <- filedata()
+    if (is.null(df)) return(NULL)
+    textInput('candidate1', 'Name of candidate 1:', value='Hardy')  #CHANGE VALUE LATER
+  })
+
+  output$dependent2 <- renderUI({
+    df <- filedata()
+    if (is.null(df)) return(NULL)
+    items=names(df)
+    names(items)=items
+    selectInput('dependent2','Candidate 2 data:',items, selected='pct_for_kolstad2') #CHANGE SELECTED LATER
+  })
+
+  output$candName2 <- renderUI({
+    df <- filedata()
+    if (is.null(df)) return(NULL)
+    textInput('candidate2', 'Name of candidate 2:', value='Kolstad') #CHANGE VALUE LATER
+  })
+
+  output$dependent3 <- renderUI({
+    df <- filedata()
+    if (is.null(df)) return(NULL)
+    items=names(df)
+    names(items)=items
+    selectInput('dependent3','Candidate 3 data:',items, selected='pct_for_nadeem2')
+  })
+
+  output$candName3 <- renderUI({
+    df <- filedata()
+    if (is.null(df)) return(NULL)
+    textInput('candidate3', 'Name of candidate 3:', value = 'Nadeem')
+  })
   
   
   ##Prompts for race data and names
   
-  output$groupDataPrompts <- renderUI({
+  # output$groupDataPrompts <- renderUI({
+  #   df <- filedata()
+  #   if (is.null(df)) return(NULL)
+  #   if (is.null(input$numRaces)) return(NULL)
+  #   numRaces <- as.integer(input$numRaces)
+  #   items=names(df)
+  #   names(items)=items
+  #   
+  #   lapply(1:numRaces, function(i) {
+  #     varName1 <- paste("independent",i, sep = "")
+  #     text1 <- paste("Demographic variable ", i, " data: ", sep= "")
+  #     selectInput(varName1,text1,items)
+  #   })
+  #   
+  # })
+  # 
+  # output$groupNamePrompts <- renderUI({
+  #   df <- filedata()
+  #   if (is.null(df)) return(NULL)
+  #   if (is.null(input$numRaces)) return(NULL)
+  #   numRaces <- as.integer(input$numRaces)
+  #   items=names(df)
+  #   names(items)=items
+  #   
+  #   lapply(1:numRaces, function(i) {
+  #     varName2 <- paste("raceName",i, sep = "")
+  #     text2 <- paste("Name of demographic group ", i, ": ", sep= "")
+  #     textInput(varName2, text2)
+  #   })
+  # })
+  
+  output$independent1 <- renderUI({
     df <- filedata()
     if (is.null(df)) return(NULL)
-    if (is.null(input$numRaces)) return(NULL)
-    numRaces <- as.integer(input$numRaces)
     items=names(df)
     names(items)=items
-    
-    lapply(1:numRaces, function(i) {
-      varName1 <- paste("independent",i, sep = "")
-      text1 <- paste("Demographic variable ", i, " data: ", sep= "")
-      selectInput(varName1,text1,items)
-    })
-    
+    selectInput('independent1', 'Demographic variable 1:', items, selected='pct_ind_vote') #CHANGE SELECTED LATER
   })
-  
-  output$groupNamePrompts <- renderUI({
+
+  output$raceVar1 <- renderUI({
     df <- filedata()
     if (is.null(df)) return(NULL)
-    if (is.null(input$numRaces)) return(NULL)
-    numRaces <- as.integer(input$numRaces)
+    textInput('raceName1', 'Name of demographic group 1:', value='Indian') #CHANGE VALUE LATER
+  })
+
+  output$independent2 <- renderUI({
+    df <- filedata()
+    if (is.null(df)) return(NULL)
     items=names(df)
     names(items)=items
-    
-    lapply(1:numRaces, function(i) {
-      varName2 <- paste("raceName",i, sep = "")
-      text2 <- paste("Name of demographic group ", i, ": ", sep= "")
-      textInput(varName2, text2)
-    })
+    selectInput('independent2', 'Demographic variable 2:', items, selected='pct_e_asian_vote')
   })
-  
-  # output$independent1 <- renderUI({
-  #   df <- filedata()
-  #   if (is.null(df)) return(NULL)
-  #   items=names(df)
-  #   names(items)=items
-  #   selectInput('independent1', 'Demographic variable 1:', items, selected='pct_ind_vote') #CHANGE SELECTED LATER
-  # })
-  # 
-  # output$raceVar1 <- renderUI({
-  #   df <- filedata()  
-  #   if (is.null(df)) return(NULL)
-  #   textInput('raceName1', 'Name of demographic group 1:', value='Indian') #CHANGE VALUE LATER
-  # })
-  # 
-  # output$independent2 <- renderUI({
-  #   df <- filedata()
-  #   if (is.null(df)) return(NULL)
-  #   items=names(df)
-  #   names(items)=items
-  #   selectInput('independent2', 'Demographic variable 2:', items, selected='pct_e_asian_vote')
-  # })
-  # 
-  # output$raceVar2 <- renderUI({
-  #   df <- filedata()  
-  #   if (is.null(df)) return(NULL)
-  #   textInput('raceName2', 'Name of demographic group 2:', value = "East Asian")
-  # })
-  # 
-  # output$independent3 <- renderUI({
-  #   df <- filedata()
-  #   if (is.null(df)) return(NULL)
-  #   items=names(df)
-  #   names(items)=items
-  #   selectInput('independent3', 'Demographic variable 3:', items, selected='pct_non_asian_vote')
-  # })
-  # 
-  # output$raceVar3 <- renderUI({
-  #   df <- filedata()  
-  #   if (is.null(df)) return(NULL)
-  #   textInput('raceName3', 'Name of demographic group 3:', value = "Non-Asian")
-  # })
+
+  output$raceVar2 <- renderUI({
+    df <- filedata()
+    if (is.null(df)) return(NULL)
+    textInput('raceName2', 'Name of demographic group 2:', value = "East Asian")
+  })
+
+  output$independent3 <- renderUI({
+    df <- filedata()
+    if (is.null(df)) return(NULL)
+    items=names(df)
+    names(items)=items
+    selectInput('independent3', 'Demographic variable 3:', items, selected='pct_non_asian_vote')
+  })
+
+  output$raceVar3 <- renderUI({
+    df <- filedata()
+    if (is.null(df)) return(NULL)
+    textInput('raceName3', 'Name of demographic group 3:', value = "Non-Asian")
+  })
   
   
   ##Prompts for total votes

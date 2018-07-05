@@ -23,35 +23,35 @@ dashboardPage(
       uiOutput('numCandidates'),
       uiOutput("numRaces"),
       tags$hr(),
-      uiOutput("candDataPrompts"),
-      uiOutput("candNamePrompts"),
-      # uiOutput('dependent1'),
-      # uiOutput('candName1'),
-      # conditionalPanel(
-      #   condition = "input.numCandidates >= 2", 
-      #   uiOutput('dependent2'),
-      #   uiOutput('candName2')),
-      # conditionalPanel(
-      #   condition = "input.numCandidates >= 3", 
-      #   uiOutput('dependent3'),
-      #   uiOutput('candName3')),
+      # uiOutput("candDataPrompts"),
+      # uiOutput("candNamePrompts"),
+      uiOutput('dependent1'),
+      uiOutput('candName1'),
+      conditionalPanel(
+        condition = "input.numCandidates >= 2",
+        uiOutput('dependent2'),
+        uiOutput('candName2')),
+      conditionalPanel(
+        condition = "input.numCandidates >= 3",
+        uiOutput('dependent3'),
+        uiOutput('candName3')),
       
       tags$hr(),
       
       ##Reactively prompt for race data and names
-      uiOutput("groupDataPrompts"),
-      uiOutput("groupNamePrompts"),
+      # uiOutput("groupDataPrompts"),
+      # uiOutput("groupNamePrompts"),
       
-      # uiOutput('independent1'),
-      # uiOutput('raceVar1'),
-      # conditionalPanel(
-      #   condition = "input.numRaces >= 2", 
-      #   uiOutput('independent2'),
-      #   uiOutput('raceVar2')),
-      # conditionalPanel(
-      #   condition = "input.numRaces >= 3", 
-      #   uiOutput('independent3'),
-      #   uiOutput('raceVar3')),
+      uiOutput('independent1'),
+      uiOutput('raceVar1'),
+      conditionalPanel(
+        condition = "input.numRaces >= 2",
+        uiOutput('independent2'),
+        uiOutput('raceVar2')),
+      conditionalPanel(
+        condition = "input.numRaces >= 3",
+        uiOutput('independent3'),
+        uiOutput('raceVar3')),
       
       tags$hr(),
       uiOutput('tot.votes'),
