@@ -303,8 +303,13 @@ shinyServer(function(input, output, session) {
       full_tab <- cbind(full_tab, cand_dat)
     }
     
+    full_tab <- round(full_tab, 3)
+    
     rownames(full_tab) <- table_names
     colnames(full_tab) <- candidate_name
+    
+    full_tab <- cbind(table_names,full_tab)
+    colnames(full_tab)[1] <- "Demographic Group"
     
     # generates goodman plot
     # left to do
@@ -391,7 +396,7 @@ shinyServer(function(input, output, session) {
     }
     
     
-    list(gr.plot = gr.plot,ei.table = ei.df, ei.plot = comb_plot) 
+    list(gr.tab = full_tab,ei.table = ei.df, ei.plot = comb_plot) 
   }
   
   # 2x2 case
@@ -437,6 +442,11 @@ shinyServer(function(input, output, session) {
     run_model_rc(independents(),dependents())
   })
   
+  output$gr_rc <- renderTable({
+    # generates table
+    if (input$numRaces < 2) return(NULL)
+    req(input$action)
+    model_rc()$gr.tab}, align='c', digits=3)
   
   output$est_rc <- renderTable({
     # generates table
