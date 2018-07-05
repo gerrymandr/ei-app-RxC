@@ -360,24 +360,51 @@ shinyServer(function(input, output, session) {
     #### rxc Ecological Regression
     ####
     # goodman estimates
-    ger <- lm(y~x, data=df)
+    form_indep <- NULL
+    for(i in 1:(length(races)-1)){
+      if(i == (length(races)-1)){
+        new_form_indep <- paste(races[i])
+      }else{
+        new_form_indep <- paste(races[i], " + ", sep = "")
+      }
+      form_indep <- paste(form_indep, new_form_indep, sep = "")
+    }
     
-    # ei estimate for table and confidence interval
-    table.names <- c('ei.minority', 'ei.white')
-    ei.out <- ei_est_gen('y', '~ x', 'z',
-                         data = df[,c(1:3),], table_names = table.names, sample=1000) # eiCompare
-    #ei.out <- ei(y~x, total=input$tot.votes, data=df) # ei
-    edf.t <- data.frame(w=c(paste('All but ', input$raceName, ' support', sep=''),
-                            hp.low.mean,
-                            ger$coefficients[1],
-                            ei.out$ei.white[1]/100,
-                            ei.out$ei.white[2]/100),
-                        m=c(paste(input$raceName, ' support', sep=''),
-                            hp.high.mean,
-                            ger$coefficients[1]+ger$coefficients[2],
-                            ei.out$ei.minority[1]/100,
-                            ei.out$ei.minority[2]/100))
-    row.names(edf.t) <- c(candidate, 'Homogeneous precincts', 'Goodman ER', 'Ecol Inf', 'EI.se')
+    #creating formulas and models
+    forms <- list()
+    mod <- list()
+    for(j in 1:length(cands)){
+      #j <- 1
+      forms[[j]] <- paste(cands[j], " ~ ", form_indep, sep = "")
+      forms[[j]] <- as.formula(forms[[j]])
+      mod[[j]] <- lm(forms[[j]], data = df)
+    }
+    
+    #start getting problems when everything adds to 1
+    # INTERCEPT IS THE ONE LEFT OUT
+    mod <- lm(pct_for_hardy2 ~ pct_e_asian_vote + pct_non_asian_vote , data = df)
+    as.numeric(summary(mod)$coefficients[,1])
+    
+    full_tab <- NULL
+    cand_dat <- NULL
+    for(i in 1:length(cands)){
+      #i <- 1
+      coeff <- as.numeric(summary(mod[[i]])$coefficients[,1])
+      cand_dat <- NULL
+      for(j in 1:length(coeff)){
+        if(j == length(coeff)){
+          new_row <- coeff[1]
+        }else{
+          new_row <- coeff[1] + coeff[j+1]
+        }
+        cand_dat <- rbind(cand_dat, new_row)
+      }
+      full_tab <- cbind(full_tab, cand_dat)
+    }
+    
+    rownames(full_tab) <- table_names
+    colnames(full_tab) <- candidate_name
+    
     
     # generates goodman plot
     gr.plot <- ggplot(df, aes(x=x,y=y)) +
@@ -477,7 +504,7 @@ shinyServer(function(input, output, session) {
     }
     
     
-    list(gr.plot = gr.plot, ei.table = ei.df, ei.plot = comb_plot) 
+    list(gr.plot = gr.plot,ei.table = ei.df, ei.plot = comb_plot) 
   }
   
   # 2x2 case
