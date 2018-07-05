@@ -514,6 +514,20 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$action, {
+
+    output$est_expl <- renderUI({
+      HTML(paste("First, we compare predictions from three different models for 
+                 each candidate's vote share given demographic and total vote data.", "<br/>","<br/>"))
+    })
+    
+    output$bounds_expl <- renderUI({ 
+      HTML(paste("<br/>","Finally, we calculate ecological inference predictions for each candidate's vote share and plot them with credible intervals. These credible intervals
+                 give us ranges of possible vote shares by race. We are 95% confident that the true vote shares for each candidate will fall in these", input$numCandidates, "ranges. In other 
+                 words, if we did 100 ecological inference predictions, 95 times out of 100, the vote share would fall in these intervals. <br/> <br/>", "<br/>","<br/>"))
+    })
+  })
+  
+  observeEvent(input$action, {
     output$report <- downloadHandler(
       filename = "report.pdf",
       
