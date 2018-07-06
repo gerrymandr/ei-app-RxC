@@ -330,8 +330,8 @@ shinyServer(function(input, output, session) {
           #geom_point(pch=1, size=5, aes(colour=as.factor(df$hp))) +
           #scale_color_manual('Homogeneous precincts', breaks=c(0,1), values=c('Gray', 'Red'), labels=c('No', paste('Most extreme ', input$slider,'%', sep=''))) +
           #geom_hline(yintercept=0.5, linetype=2, colour='lightgray') +
-          theme_bw() + ggtitle(paste("Goodman's ER for Candidate", cands[j])) + labs(x = paste('% population ', races[i], sep=''),
-                                                                                     y= paste('% vote for ', cands[j], sep=''))#,
+          theme_bw() + ggtitle(paste("Goodman's ER for Candidate", candidate_name[j])) + labs(x = paste('% population ', table_names[i], sep=''),
+                                                                                     y= paste('% vote for ', candidate_name[j], sep=''))#,
         #caption = paste('Election data from', 'and demographic data from', sep = ' '))
         if(i == 1){
           comb_plot <- new_plot
@@ -461,7 +461,7 @@ shinyServer(function(input, output, session) {
     # generates ER plot
     output$gr.bounds_rc <- renderPlot({
       plot(model_rc()$gr.plot)
-    }, width=600, height=600)
+    }, width=810, height=600)
   })
 
   output$ei.compare <- renderTable({
@@ -477,7 +477,7 @@ shinyServer(function(input, output, session) {
   output$welcome <- renderUI({
     req(is.null(input$file1)) # require that the input is null
     HTML(paste("<br/><br/><br/><br/><br/><br/>", tags$h2(tags$b("Welcome"), align="center"),
-               tags$h5(tags$i("No data is currently loaded."), align="center") ))
+               tags$h5(tags$i("No data is currently loaded."), align="center"),"<br/><br/><br/><br/><br/><br/>"))
   })
   
   observeEvent(input$action, {

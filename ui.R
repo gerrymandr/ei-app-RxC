@@ -134,17 +134,29 @@ dashboardPage(
                                 ")),
            conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                             tags$div("Calculating...",id="loadmessage")),
+        #    tags$head(tags$style(type="text/css", "#ei.bounds_rc, #gr_rc, #gr.bounds_rc {
+        #       width: 60%;
+        #      display: block;
+        #       margin-left: auto;
+        #       margin-right: auto;
+        # }"
+        #    )),
            tabBox(
              width=NULL, side='right', height=NULL,
-             selected='RxC Case',
+             selected='Model Comparison',
              tabPanel('Data', div(style = 'overflow-x: scroll', tableOutput('ei.compare'))),
-             tabPanel('RxC Case', htmlOutput("welcome"), htmlOutput("est_expl"), 
-                      tableOutput('est_rc'), htmlOutput('gr_expl'),
-                      tableOutput('gr_rc'), plotOutput('gr.bounds_rc'),
+             tabPanel('EI',
                       htmlOutput("bounds_expl"),
-                      #htmlOutput("gr.bounds_rc"),
-                      plotOutput('ei.bounds_rc'))
-                )
+                      plotOutput('ei.bounds_rc',height="100%")),
+             tabPanel('Goodman', 
+                      htmlOutput('gr_expl'),
+                      tableOutput('gr_rc'), 
+                      plotOutput('gr.bounds_rc',height="100%")),
+             tabPanel('Model Comparison', 
+                      htmlOutput("welcome"), 
+                      htmlOutput("est_expl"), 
+                      tableOutput('est_rc'))
+           )
           )
       )
    )
