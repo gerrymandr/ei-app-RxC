@@ -495,6 +495,14 @@ shinyServer(function(input, output, session) {
     })
   })
   
+  
+  output$gr_expl <- renderUI({
+    HTML(paste("We also fit the Goodman's Regressions for each of the candidates. This is a multiple linear
+               regression, where we consider all demographic groups as fixed effects in a model. Then, we take the combination of the 
+               intercept and slopes to find estimate for each race. We note that the last group chosen's effect is just the intercept.
+               The other groups' estimate is the addition of the slope and the intercept, as in the 2x2 case.", "<br/>","<br/>"))
+  })
+  
   observeEvent(input$action, {
     output$report <- downloadHandler(
       filename = "report.pdf",
