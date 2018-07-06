@@ -121,8 +121,9 @@ dashboardPage(
              selected='RxC Case',
              tabPanel('Data', div(style = 'overflow-x: scroll', tableOutput('ei.compare'))),
              tabPanel('RxC Case', withSpinner(htmlOutput("est_expl")),
-                      tableOutput('est_rc'),tableOutput('gr_rc'), htmlOutput("bounds_expl"),
-                      htmlOutput("gr.bounds_rc"),
+                      tableOutput('est_rc'), withSpinner(htmlOutput('gr_expl')),
+                      tableOutput('gr_rc'), htmlOutput("bounds_expl"),
+                      #htmlOutput("gr.bounds_rc"),
                       plotOutput('ei.bounds_rc'))
                 )
           )
