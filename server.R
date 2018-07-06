@@ -312,7 +312,41 @@ shinyServer(function(input, output, session) {
     colnames(full_tab)[1] <- "Demographic Group"
     
     # generates goodman plot
-    # left to do
+    for(j in 1:length(cands)){
+      coeff <- as.numeric(summary(mod[[j]])$coefficients[,1])
+      for(i in 1:(length(races)-1)){
+        ind <- c(2,3)
+        new_plot <-
+          ggplot(df, aes_string(x=races[i],y=cands[j])) +
+          xlab(races[i]) + ylab(cands[j]) +
+          #geom_smooth(method='lm', se=T, colour='black', fullrange=TRUE) +
+          geom_abline(slope = coeff[ind[which(ind == (i+1))]],
+                      intercept = coeff[1]+coeff[ind[-which(ind == (i+1))]]*median(df[,which(colnames(df) == races[i+1])]))+
+          scale_x_continuous(expand=c(0,0), limits=c(0,1)) +
+          scale_y_continuous(expand=c(0,0), limits=c(-1.5,1.5)) +
+          coord_cartesian(xlim=c(0,1), ylim=c(0,1)) +
+          #geom_point(size=3, aes(colour=as.factor(df$threshold))) +
+          geom_point(pch=1, size=3) +
+          #geom_point(pch=1, size=5, aes(colour=as.factor(df$hp))) +
+          #scale_color_manual('Homogeneous precincts', breaks=c(0,1), values=c('Gray', 'Red'), labels=c('No', paste('Most extreme ', input$slider,'%', sep=''))) +
+          #geom_hline(yintercept=0.5, linetype=2, colour='lightgray') +
+          theme_bw() + ggtitle(paste("Goodman's ER for Candidate", cands[j])) + labs(x = paste('% population ', races[i], sep=''),
+                                                                                     y= paste('% vote for ', cands[j], sep=''))#,
+        #caption = paste('Election data from', 'and demographic data from', sep = ' '))
+        if(i == 1){
+          comb_plot <- new_plot
+        }else{
+          comb_plot <-  grid.arrange(comb_plot, new_plot, nrow = 2, heights = c(i-1, 1))
+        }
+      }
+
+      if(j == 1){
+        tot_comb_plot <- comb_plot
+      }else{
+        tot_comb_plot <-  grid.arrange(tot_comb_plot, comb_plot, ncol = 2, widths = c(j-1, 1))
+      }
+
+    }
     
     ####
     #### rxc Ecological Inference
@@ -360,7 +394,7 @@ shinyServer(function(input, output, session) {
         ei.df <- rbind(ei.df, new_row)
       }
     }
-    colnames(ei.df) <- c("Candidate", "Race", "Estimate", "Se")
+    colnames(ei.df) <- c("Candidate", "Group", "Estimate", "Se")
     rownames(ei.df) <- c()
     ei.df <- as.data.frame(ei.df)
     ei.df$Estimate <- round(as.numeric(as.character(ei.df$Estimate)), 4)
@@ -379,12 +413,12 @@ shinyServer(function(input, output, session) {
       plot_dat$Se <- as.numeric(as.character(plot_dat$Se))
       new_plot <- base_plot +
         geom_hline(yintercept=1, col='black') +
-        geom_point(data = plot_dat, aes(x = Estimate, y = 1, col = as.factor(Race)),size=6, shape=3) +
+        geom_point(data = plot_dat, aes(x = Estimate, y = 1, col = as.factor(Group)),size=6, shape=3) +
         #ylab('') + xlab(paste('Support for candidate ', candidate, sep='')) +
         #labels=c('','','','','')) #+
         #scale_color_manual('Race', values=c('gray40', 'midnightblue'), labels=c(paste('All but ', input$raceName, sep=''), input$raceName)) +
         geom_errorbarh(data = plot_dat, aes(x = Estimate, y = 1, xmin=(Estimate) - 2*(Se), xmax=(Estimate) + 2*(Se), 
-                                            height=0.3, col = as.factor(Race)), size=2, alpha=0.7, height=0.3) +
+                                            height=0.3, col = as.factor(Group)), size=2, alpha=0.7, height=0.3) +
         theme_bw() + ggtitle(paste('Ecological Inference for Candidate', candidate_name[i]))+
         guides(col=guide_legend(title="Group Support"))
       
@@ -395,8 +429,8 @@ shinyServer(function(input, output, session) {
       }
     }
     
-    
-    list(gr.tab = full_tab,ei.table = ei.df, ei.plot = comb_plot) 
+    #gr.plot = tot_comb_plot,
+    list(gr.plot = tot_comb_plot, gr.tab = full_tab,ei.table = ei.df, ei.plot = comb_plot) 
   }
   
   # 2x2 case
@@ -462,6 +496,14 @@ shinyServer(function(input, output, session) {
     }, width=650, height=800)
   })
   
+  observeEvent(input$action, {
+    # generates ER bounds plot
+    if (input$numRaces < 2) return(NULL)
+    output$gr.bounds_rc <- renderPlot({
+      plot(model_rc()$gr.plot)
+    }, width=800, height=800)
+  })
+
   output$ei.compare <- renderTable({
     if (input$numRaces < 2) return(NULL)
     filedata()}, spacing = "xs")
