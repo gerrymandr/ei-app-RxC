@@ -458,8 +458,7 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$action, {
-    # generates ER bounds plot
-    if (input$numRaces < 2) return(NULL)
+    # generates ER plot
     output$gr.bounds_rc <- renderPlot({
       plot(model_rc()$gr.plot)
     }, width=800, height=800)
@@ -493,15 +492,17 @@ shinyServer(function(input, output, session) {
                  give us ranges of possible vote shares by race. We are 95% confident that the true vote shares for each candidate will fall in these", input$numCandidates, "ranges. In other 
                  words, if we did 100 ecological inference predictions, 95 times out of 100, the vote share would fall in these intervals. <br/> <br/>", "<br/>","<br/>"))
     })
-  })
-  
-  
-  output$gr_expl <- renderUI({
-    HTML(paste("We also fit the Goodman's Regressions for each of the candidates. This is a multiple linear
+    
+    output$gr_expl <- renderUI({
+      HTML(paste("We also fit the Goodman's Regressions for each of the candidates. This is a multiple linear
                regression, where we consider all demographic groups as fixed effects in a model. Then, we take the combination of the 
                intercept and slopes to find estimate for each race. We note that the last group chosen's effect is just the intercept.
                The other groups' estimate is the addition of the slope and the intercept, as in the 2x2 case.", "<br/>","<br/>"))
+    })
   })
+  
+  
+
   
   observeEvent(input$action, {
     output$report <- downloadHandler(
