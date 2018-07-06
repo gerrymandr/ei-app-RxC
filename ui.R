@@ -115,16 +115,22 @@ dashboardPage(
     
     column(width=9,
            downloadButton('report', 'Output PDF'),
-           downloadButton('template', "Expert Witness Report Template"),
+           ##downloadButton('template', "Expert Witness Report Template"),
            tabBox(
              width=NULL, side='right', height=NULL,
-             selected='2x2 Case',
+             selected='RxC Case',
              tabPanel('Data', div(style = 'overflow-x: scroll', tableOutput('ei.compare'))),
+<<<<<<< HEAD
              tabPanel('RxC Case', withSpinner(htmlOutput("est_expl")),
                       tableOutput('est_rc'),tableOutput('gr_rc'), htmlOutput("bounds_expl"),
                       htmlOutput("gr.bounds_rc"),
                       plotOutput('ei.bounds_rc')),
              tabPanel('2x2 Case', htmlOutput("welcome"), plotOutput('goodmanPlots'))
+=======
+             tabPanel('RxC Case', htmlOutput("est_expl"), withSpinner(tableOutput('est_rc')),
+                      tableOutput('gr_rc'), htmlOutput("bounds_expl"),
+                      plotOutput('ei.bounds_rc'))
+>>>>>>> 51f238045ac6b3f91bfe318fc3e237d46992172b
                 )
           )
       )
