@@ -461,7 +461,7 @@ shinyServer(function(input, output, session) {
     # generates ER plot
     output$gr.bounds_rc <- renderPlot({
       plot(model_rc()$gr.plot)
-    }, width=800, height=800)
+    }, width=600, height=600)
   })
 
   output$ei.compare <- renderTable({

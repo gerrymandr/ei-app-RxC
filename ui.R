@@ -140,8 +140,8 @@ dashboardPage(
              tabPanel('Data', div(style = 'overflow-x: scroll', tableOutput('ei.compare'))),
              tabPanel('RxC Case', htmlOutput("welcome"), htmlOutput("est_expl"), 
                       tableOutput('est_rc'), htmlOutput('gr_expl'),
-                      tableOutput('gr_rc'), htmlOutput("bounds_expl"),
-                      plotOutput('gr.bounds_rc'),
+                      tableOutput('gr_rc'), plotOutput('gr.bounds_rc'),
+                      htmlOutput("bounds_expl"),
                       #htmlOutput("gr.bounds_rc"),
                       plotOutput('ei.bounds_rc'))
                 )
