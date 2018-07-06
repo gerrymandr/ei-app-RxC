@@ -114,14 +114,32 @@ dashboardPage(
     ),
     
     column(width=9,
-           downloadButton('report', 'Output PDF'),
            ##downloadButton('template', "Expert Witness Report Template"),
+           downloadButton('report', 'Output PDF', class='outputpdf'), 
+           #tags$head(tags$style(type="text/css", ".outputpdf {float:right; top:0px}")),
+           tags$head(tags$style(type="text/css", "
+                                  #loadmessage {
+                                position: fixed;
+                                bottom: 0px;
+                                left: 0px;
+                                width: 100%;
+                                padding: 5px 0px 5px 0px;
+                                text-align: center;
+                                font-weight: bold;
+                                font-size: 100%;
+                                color: #000000;
+                                background-color: #FFFF66;
+                                z-index: 105;
+                                }
+                                ")),
+           conditionalPanel(condition="$('html').hasClass('shiny-busy')",
+                            tags$div("Calculating...",id="loadmessage")),
            tabBox(
              width=NULL, side='right', height=NULL,
              selected='RxC Case',
              tabPanel('Data', div(style = 'overflow-x: scroll', tableOutput('ei.compare'))),
-             tabPanel('RxC Case', withSpinner(htmlOutput("est_expl")),
-                      tableOutput('est_rc'),tableOutput('gr_rc'), htmlOutput("bounds_expl"),
+             tabPanel('RxC Case', htmlOutput("welcome"), htmlOutput("est_expl"), tableOutput('est_rc'),
+                      tableOutput('gr_rc'), htmlOutput("bounds_expl"),
                       htmlOutput("gr.bounds_rc"),
                       plotOutput('ei.bounds_rc'))
                 )
