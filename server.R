@@ -399,42 +399,6 @@ shinyServer(function(input, output, session) {
     list(gr.tab = full_tab,ei.table = ei.df, ei.plot = comb_plot) 
   }
   
-  # 2x2 case
-  
-  # models <- eventReactive(input$action, {
-  #   models <- list()
-  #   for(i in 1:dependents()$numCandidates){
-  #     #name = paste("model",i, sep = "")
-  #     new <- run_model_22(independents()$groups[1], dependents()$cands[i],
-  #                                  input$tot.votes, dependents()$candNames[i])
-  #     models[[i]] <- new
-  #   }
-  #   models
-  # })
-  # 
-  # 
-  # output$goodmanPlots = renderPlot({
-  #   req(input$action)
-  #   ptlist <- list()
-  #   for(i in 1:input$numCandidates){
-  #     ptlist[[i]] <- models()[[i]]$gr.plot
-  #   }
-  # 
-  #   grid.arrange(grobs=ptlist)
-  # })
-  # 
-  # output$ests = renderTable({
-  #   req(input$action)
-  #   tt1 <- ttheme_default()
-  #   ptlist <- list()
-  #   for(i in 1:input$numCandidates){
-  #     ptlist[[i]] <- tableGrob(models()[[i]]$ei.table, theme = tt1)
-  #   }
-  #   
-  #   grid.arrange(grobs=ptlist, as.table=TRUE)
-  # })
-  
-  
   #RxC case
   
   model_rc <- eventReactive(input$action, {
@@ -444,26 +408,22 @@ shinyServer(function(input, output, session) {
   
   output$gr_rc <- renderTable({
     # generates table
-    if (input$numRaces < 2) return(NULL)
     req(input$action)
     model_rc()$gr.tab}, align='c', digits=3)
   
   output$est_rc <- renderTable({
     # generates table
-    if (input$numRaces < 2) return(NULL)
     req(input$action)
     model_rc()$ei.table}, align='c', digits=3)
   
   observeEvent(input$action, {
     # generates EI bounds plot
-    if (input$numRaces < 2) return(NULL)
     output$ei.bounds_rc <- renderPlot({
       plot(model_rc()$ei.plot)
     }, width=650, height=800)
   })
   
   output$ei.compare <- renderTable({
-    if (input$numRaces < 2) return(NULL)
     filedata()}, spacing = "xs")
   
   output$template <- downloadHandler(
