@@ -122,6 +122,7 @@ dashboardPage(
              tabPanel('Data', div(style = 'overflow-x: scroll', tableOutput('ei.compare'))),
              tabPanel('RxC Case', withSpinner(htmlOutput("est_expl")),
                       tableOutput('est_rc'),tableOutput('gr_rc'), htmlOutput("bounds_expl"),
+                      htmlOutput("gr.bounds_rc"),
                       plotOutput('ei.bounds_rc')),
              tabPanel('2x2 Case', htmlOutput("welcome"), plotOutput('goodmanPlots'))
                 )
