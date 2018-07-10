@@ -45,6 +45,7 @@ shinyServer(function(input, output, session) {
 
   })
   
+  ##Create name and data prompts for given number of candidates
   # output$candDataPrompts <- renderUI({
   #   df <- filedata()
   #   if (is.null(df)) return(NULL)
@@ -76,7 +77,7 @@ shinyServer(function(input, output, session) {
   #   })
   # })
   
-  ##Prompts for candidate data (column names) and names
+  ##Non-reactive prompts for candidate data and names (for testing purposes)
   output$dependent1 <- renderUI({
     df <- filedata()
     if (is.null(df)) return(NULL)
@@ -120,7 +121,7 @@ shinyServer(function(input, output, session) {
   })
   
   
-  ##Prompts for race data and names
+  ##Create data and name prompts for given number of demographic groups
   
   # output$groupDataPrompts <- renderUI({
   #   df <- filedata()
@@ -153,6 +154,7 @@ shinyServer(function(input, output, session) {
   #   })
   # })
   
+  ##non-reactive demographic group prompts (for testing)
   output$independent1 <- renderUI({
     df <- filedata()
     if (is.null(df)) return(NULL)
@@ -216,6 +218,7 @@ shinyServer(function(input, output, session) {
     actionButton('action', ' Run', icon('refresh', lib='glyphicon'))
   })
   
+  ##Create object containing data for all dependent variables
   dependents <- eventReactive(input$action, {
     numCandidates <- input$numCandidates
     cands <- c()
@@ -228,6 +231,7 @@ shinyServer(function(input, output, session) {
     
   })
   
+  ##Create object containing data for all independent variables
   independents <- eventReactive(input$action, {
     numRaces <- input$numRaces
     groups <- c()
@@ -239,8 +243,11 @@ shinyServer(function(input, output, session) {
     list(groups=groups, groupNames = groupNames, numRaces = numRaces)
     
   })
+  
+  
   run_model_rc <- function(independents, dependents){
     # Function that generates the table, goodman plot, and EI metric (with confidence plot), given variables
+    # Must be passed complete vote and demographic data (proportions sum to 1)
     
     # dep_vec <- NULL
     # #numCandidates <- 3
@@ -433,39 +440,41 @@ shinyServer(function(input, output, session) {
     list(gr.plot = tot_comb_plot, gr.tab = full_tab,ei.table = ei.df, ei.plot = comb_plot) 
   }
   
-  #RxC case
-  
+  #Run RxC model for all given candidates and demographic groups
   model_rc <- eventReactive(input$action, {
     if (input$numRaces < 2) return(NULL)
     run_model_rc(independents(),dependents())
   })
   
+  #Render Goodman regression table
   output$gr_rc <- renderTable({
-    # generates table
     req(input$action)
     model_rc()$gr.tab}, align='c', digits=3)
   
+  #Render model comparison table
   output$est_rc <- renderTable({
-    # generates table
     req(input$action)
     model_rc()$ei.table}, align='c', digits=3)
   
+  # Render EI bounds plot
   observeEvent(input$action, {
-    # generates EI bounds plot
     output$ei.bounds_rc <- renderPlot({
       plot(model_rc()$ei.plot)
     }, width=650, height=800)
   })
   
+  #Render Goodman's Regression plots
   observeEvent(input$action, {
     # generates ER plot
     output$gr.bounds_rc <- renderPlot({
       plot(model_rc()$gr.plot)
-    }, width=810, height=600)
+    }, width=800, height=600)
   })
 
+  #Render data table
   output$ei.compare <- renderTable({
     filedata()}, spacing = "xs")
+  
   
   output$template <- downloadHandler(
     filename = "template.docx",
@@ -474,12 +483,14 @@ shinyServer(function(input, output, session) {
     }
   )
   
+  #Welcome screen that displays before data is entered
   output$welcome <- renderUI({
     req(is.null(input$file1)) # require that the input is null
     HTML(paste("<br/><br/><br/><br/><br/><br/>", tags$h2(tags$b("Welcome"), align="center"),
                tags$h5(tags$i("No data is currently loaded."), align="center"),"<br/><br/><br/><br/><br/><br/>"))
   })
   
+  #Render explanatory text
   observeEvent(input$action, {
 
     output$est_expl <- renderUI({
@@ -503,7 +514,7 @@ shinyServer(function(input, output, session) {
   
   
 
-  
+  #Compile report on results in pdf form
   observeEvent(input$action, {
     output$report <- downloadHandler(
       filename = "report.pdf",
