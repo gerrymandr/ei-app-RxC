@@ -1,0 +1,12 @@
+name: ei-app-RxC
+title: ei-app-RxC
+username:
+account: vrdi
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 378483
+bundleId: 1475199
+url: https://vrdi.shinyapps.io/ei-app-RxC/
+when: 1531318453.75202
+asMultiple: FALSE
+asStatic: FALSE
