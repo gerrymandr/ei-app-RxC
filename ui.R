@@ -23,8 +23,8 @@ dashboardPage(
       uiOutput('numCandidates'),
       uiOutput("numRaces"),
       tags$hr(),
-      # uiOutput("candDataPrompts"),
-      # uiOutput("candNamePrompts"),
+      uiOutput("candDataPrompts"),
+      uiOutput("candNamePrompts"),
       uiOutput('dependent1'),
       uiOutput('candName1'),
       conditionalPanel(
@@ -39,19 +39,19 @@ dashboardPage(
       tags$hr(),
       
       ##Reactively prompt for race data and names
-      # uiOutput("groupDataPrompts"),
-      # uiOutput("groupNamePrompts"),
+      uiOutput("groupDataPrompts"),
+      uiOutput("groupNamePrompts"),
       
-      uiOutput('independent1'),
-      uiOutput('raceVar1'),
-      conditionalPanel(
-        condition = "input.numRaces >= 2",
-        uiOutput('independent2'),
-        uiOutput('raceVar2')),
-      conditionalPanel(
-        condition = "input.numRaces >= 3",
-        uiOutput('independent3'),
-        uiOutput('raceVar3')),
+      # uiOutput('independent1'),
+      # uiOutput('raceVar1'),
+      # conditionalPanel(
+      #   condition = "input.numRaces >= 2",
+      #   uiOutput('independent2'),
+      #   uiOutput('raceVar2')),
+      # conditionalPanel(
+      #   condition = "input.numRaces >= 3",
+      #   uiOutput('independent3'),
+      #   uiOutput('raceVar3')),
       
       tags$hr(),
       uiOutput('tot.votes'),
@@ -77,9 +77,9 @@ dashboardPage(
              tags$br(),
              downloadButton("sample2", "Waterbury.csv"),
              tags$br(), tags$br(),
-             '1. Upload CSV file containing vote counts and demographic information for your election and region of interest. Other than total number of votes, percent of votes by group should be between 0 and 1.',
+             '1. Upload CSV file containing vote counts and demographic information for your election and region of interest. Vote and demographic data must be percentages between 0 and 1.',
              tags$br(), tags$br(),
-             '2. Select the relevant columns from your dataset and input category names.',
+             '2. Select the relevant columns from your dataset and input category names. Make sure you choose demographic variables that include the entire population (i.e. proportions sum to 1).',
              tags$br(), tags$br(),
              '3. Adjust the slider to select homogeneous precinct threshold.',
              tags$br(), '(by % of precincts in sample)',
