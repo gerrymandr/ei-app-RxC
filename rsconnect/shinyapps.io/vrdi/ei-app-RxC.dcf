@@ -5,8 +5,8 @@ account: vrdi
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 378483
-bundleId: 1475199
+bundleId: 1567904
 url: https://vrdi.shinyapps.io/ei-app-RxC/
-when: 1531318453.75202
+when: 1536022448.0494
 asMultiple: FALSE
 asStatic: FALSE
