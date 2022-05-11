@@ -1,9 +1,0 @@
-name: ei-app
-title:
-account: profdoug
-server: shinyapps.io
-hostUrl: https://api.shinyapps.io/v1
-appId: 206038
-bundleId: 1273789
-url: https://profdoug.shinyapps.io/ei-app/
-when: 1521304288.35997
